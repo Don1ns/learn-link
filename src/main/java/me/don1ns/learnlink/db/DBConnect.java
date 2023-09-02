@@ -1,18 +1,29 @@
 package me.don1ns.learnlink.db;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DBConnect {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/learnlink";
-    private static final String DB_USERNAME = "postgres";
-    private static final String DB_PASSWORD = "postgres";
     private Connection connection;
 
     public DBConnect() {
+        Properties properties = new Properties();
+        try (FileInputStream fileInputStream = new FileInputStream("db.properties")) {
+            properties.load(fileInputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String dbUrl = properties.getProperty("db.url");
+        String dbUsername = properties.getProperty("db.username");
+        String dbPassword = properties.getProperty("db.password");
+
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
         } catch (SQLException e) {
             e.printStackTrace();
         }
